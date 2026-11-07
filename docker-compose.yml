@@ -1,0 +1,37 @@
+# Ambiente LOCAL completo (Sessões 2 e 3): todos os serviços em containers.
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    volumes: [redis-data:/data]
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: lab
+      POSTGRES_DB: elo_lab
+    volumes: [pg-data:/var/lib/postgresql/data]
+  mongo:
+    image: mongo:7
+    volumes: [mongo-data:/data/db]
+  api:
+    build: ./api
+    environment:
+      DATABASE_URL: postgres://lab:lab@postgres:5432/elo_lab
+      REDIS_URL: redis://redis:6379
+      MONGO_URL: mongodb://mongo:27017
+    ports: ["3000:3000"]
+    depends_on: [redis, postgres, mongo]
+    restart: unless-stopped
+  worker:
+    build: ./worker
+    environment:
+      DATABASE_URL: postgres://lab:lab@postgres:5432/elo_lab
+      REDIS_URL: redis://redis:6379
+      MONGO_URL: mongodb://mongo:27017
+    depends_on: [redis, postgres, mongo]
+    restart: unless-stopped
+volumes:
+  redis-data:
+  pg-data:
+  mongo-data:

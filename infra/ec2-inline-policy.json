@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "LerSegredosDoLab",
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "arn:aws:secretsmanager:us-east-2:SUA_CONTA:secret:elo-lab/*"
+    },
+    {
+      "Sid": "ListarBackups",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::SEU_BUCKET"
+    },
+    {
+      "Sid": "GravarELerBackups",
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject"],
+      "Resource": "arn:aws:s3:::SEU_BUCKET/*"
+    }
+  ]
+}

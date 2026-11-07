@@ -1,0 +1,40 @@
+# Ambiente "PRODUÇÃO" do laboratório (Sessão 4 em diante):
+# Postgres no RDS, Mongo no Atlas, segredos vindos do Secrets Manager (arquivo .env gerado pelo deploy.sh).
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    volumes: [redis-data:/data]
+    restart: unless-stopped
+  api:
+    image: ${ECR_REGISTRY}/elo-lab-api:${IMAGE_TAG:-latest}
+    env_file: .env
+    environment:
+      REDIS_URL: redis://redis:6379
+      PGSSL: "true"
+      PORT: "3000"
+    ports: ["80:3000"]
+    depends_on: [redis]
+    restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-2
+        awslogs-group: /elo-lab/api
+        awslogs-create-group: "true"
+  worker:
+    image: ${ECR_REGISTRY}/elo-lab-worker:${IMAGE_TAG:-latest}
+    env_file: .env
+    environment:
+      REDIS_URL: redis://redis:6379
+      PGSSL: "true"
+    depends_on: [redis]
+    restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-2
+        awslogs-group: /elo-lab/worker
+        awslogs-create-group: "true"
+volumes:
+  redis-data:
