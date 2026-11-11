@@ -104,4 +104,4 @@ app.get('/tasks/:id/events', async (req, res) => {
   await mongo.connect();
   await migrate();
   app.listen(PORT, () => log('info', `API ouvindo na porta ${PORT}`));
-})().catch((e) => { console.error('Falha ao iniciar a API:', e); process.exit(1); );
+})().catch((e) => { console.error('Falha ao iniciar a API:', e); process.exit(1); });
