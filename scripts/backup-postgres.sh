@@ -7,7 +7,7 @@ DATABASE_URL=$(get DATABASE_URL)
 BUCKET=$(get BACKUP_BUCKET)
 FILE="elo_lab_$(date -u +%Y%m%d_%H%M%S).sql.gz"
 
-docker run --rm -e PGSSLMODE=require postgres:17-alpine \
+docker run --rm -e PGSSLMODE=require postgres:18-alpine \
   pg_dump "$DATABASE_URL" --no-owner --no-privileges | gzip > "/tmp/$FILE"
 aws s3 cp "/tmp/$FILE" "s3://$BUCKET/postgres/$FILE"
 rm -f "/tmp/$FILE"
