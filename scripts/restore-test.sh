@@ -8,7 +8,7 @@ DATABASE_URL=$(get DATABASE_URL)
 BUCKET=$(get BACKUP_BUCKET)
 KEY="${1:-$(aws s3 ls "s3://$BUCKET/postgres/" | sort | tail -1 | awk '{print $4}')}"
 TEST_URL=$(echo "$DATABASE_URL" | sed -E 's#/([^/?]+)(\?|$)#/restore_test\2#')
-PSQL="docker run --rm -i -e PGSSLMODE=require postgres:17-alpine psql"
+PSQL="docker run --rm -i -e PGSSLMODE=require postgres:18-alpine psql"
 
 echo ">> Restaurando $KEY em restore_test"
 aws s3 cp "s3://$BUCKET/postgres/$KEY" /tmp/restore.sql.gz
