@@ -46,7 +46,7 @@ app.use(express.json());
 app.get('/', (_req, res) => {
   res.type('html').send(`<!doctype html><meta charset="utf-8"><title>elo-lab</title>
 <body style="font-family:system-ui;max-width:640px;margin:40px auto;padding:0 16px">
-<h1>elo-lab</h1>
+<h1>elo-lab v2</h1>
 <form id="f"><input id="t" placeholder="Texto da tarefa" required style="width:70%"> <button>Criar tarefa</button></form>
 <pre id="out"></pre>
 <script>
